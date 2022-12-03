@@ -1,0 +1,18 @@
+*.vscode
+
+./.git/hooks/pre-push.sample
+./.git/hooks/post-update.sample
+./.git/hooks/pre-merge-commit.sample
+./.git/hooks/pre-commit.sample
+./.git/hooks/fsmonitor-watchman.sample
+./.git/hooks/pre-rebase.sample
+./.git/hooks/commit-msg.sample
+./.git/hooks/pre-receive.sample
+./.git/hooks/pre-applypatch.sample
+./.git/hooks/prepare-commit-msg.sample
+./.git/hooks/applypatch-msg.sample
+./.git/hooks/update.sample
+./week 1/ku01_numcode
+./week 1/[ku01_thief]
+./week 1/robot1000
+./week 1/[ku01_slide]
