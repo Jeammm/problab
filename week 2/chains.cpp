@@ -1,9 +1,11 @@
 #include <iostream>
-#include <vector>
+// #include <vector>
 #include <cstdlib>
 
 using namespace std;
-vector<int> path;
+// vector<int> path;
+int path[100001];
+int path_index = 0;
 
 typedef struct list {
     int data;
@@ -29,43 +31,35 @@ list_t * append(list_t* list, int code) {
     }
 }
 
-list_t * reverse_list(list_t* list) {
-    list_t *reversed = NULL;
-    while (list->next != NULL) {
-        list = list->next;
-    }
-    while (list != NULL) {
-        reversed = append(reversed, list->data);
-        list = list->prev;
-    }
+void reverse_list(list_t *&list) {
+  list_t *temp = NULL;
+  list_t *current = list;
 
-    return reversed;
+  while (current != NULL) {
+    temp = current->prev;
+    current->prev = current->next;
+    current->next = temp;
+    current = current->prev;
+  }
+
+  if (temp != NULL) {
+    list = temp->prev;
+  }
 }
 
-list_t * swap(list_t* a, list_t* b, int robot, int reverse) {
-    for (int i=0; i<robot; i++) {
-        a = a->next;
-    }
-
+list_t * swap(list_t* a, list_t* b, list_t* robot, int reverse) {
     if (reverse == 1) {
-        b = reverse_list(b);
+        reverse_list(b);
     }
-    list_t *temp = a->next;
+    // cout << "robot: " << robot->data << "\n";
+    list_t *temp = robot->next;
     if (temp != NULL) {
         temp->prev = NULL;
     }
-    b->prev = a;
-    a->next = b;
-    return temp;
-}
 
-int size(list_t* line) {
-    int count = 0;
-    while (line != NULL) {
-        count++;
-        line = line->next;
-    }
-    return count;
+    b->prev = robot;
+    robot->next = b;
+    return temp;
 }
 
 int front_list(list_t* line) {
@@ -88,11 +82,10 @@ int print_list(list_t* list) {
     return 1;
 }
 
-int register_path(list_t* line, int robot) {
-    for (int i=0; i<robot; i++) {
-        line = line->next;
-    }
-    path.push_back(line->data);
+int register_path(list_t* robot) {
+    path[path_index] = robot->data;
+    // path.push_back(robot->data);
+    path_index++;
     return 1;
 }
 
@@ -112,17 +105,17 @@ int main(void) {
         storage[i] = line;
     }
 
-    int robot = 0;
+    list_t *robot = storage[0];
     for (int i=0; i<n; i++) {
         char cmd;
         cin >> cmd;
         if (cmd == 'F') {
-            if (size(storage[0])-1 > robot) {
-                robot++;
+            if (robot->next != NULL) {
+                robot = robot->next;
             }
         } else if (cmd == 'B') {
-            if (robot != 0) {
-                robot--;
+            if (robot->prev != NULL) {
+                robot = robot->prev;
             }
         } else if (cmd == 'C') {
             int x;
@@ -130,27 +123,36 @@ int main(void) {
             int target = 0;
             int reverse = 0;
             for (int i=1; i<l; i++) {
-                if (back_list(storage[i]) == x) {
-                    reverse = 1;
-                    target = i;
-                    break;
-                }
                 if (front_list(storage[i]) == x) {
                     target = i;
                     break;
                 }
             }
+            if (target == 0) {
+                for (int i=1; i<l; i++) {
+                    if (back_list(storage[i]) == x) {
+                        reverse = 1;
+                        target = i;
+                        break;
+                    }
+                }
+            }
+
             storage[target] = swap(storage[0], storage[target], robot, reverse);
-            if (size(storage[0])-1 > robot) {
-                robot++;
+            if (robot->next != NULL) {
+                robot = robot->next;
             }
         }
         
-        register_path(storage[0], robot);
+        register_path(robot);
+ 
+        // cout << "line";
+        // print_list(storage[0]);
+    // }
+    // for (auto ptr : path) {
+    //     cout << ptr << "\n";
     }
-    for (auto ptr : path) {
-        cout << ptr << "\n";
+    for (int i=0; i<path_index; i++) {
+        cout << path[i] << "\n";
     }
-
-
 }
