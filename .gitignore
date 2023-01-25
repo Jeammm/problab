@@ -1,4 +1,6 @@
 *.vscode
+*.in
+*.exe
 
 ./.git/hooks/pre-push.sample
 ./.git/hooks/post-update.sample
