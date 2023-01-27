@@ -1,26 +1,61 @@
 #include <iostream>
-#include <array>
-#include <cmath>
 
 using namespace std;
-array<int, 4> moves = {0, 0, 0, 0};
+int N = 0;
+int E = 0;
+int S = 0;
+int W = 0;
+int moves = 0;
+int back = 0;
+int loss;
+string program;
 
-int get_fuel(array<int, 4> &program) {
+int get_fuel() {
     
 }
 
 int main(void) {
-    string program, loss;
+    
     cin >> program >> loss;
     for (int i=0; i<program.size(); i++) {
         switch (program[i]) {
-            case 'N': moves[0]++; break;
-            case 'E': moves[1]++; break;
-            case 'S': moves[2]++; break;
-            case 'W': moves[3]++; break;
+            case 'N': N++; break;
+            case 'E': E++; break;
+            case 'S': S++; break;
+            case 'W': W++; break;
         }
     }
 
-    int max=0;
+    if (N > S)
+    {
+        moves += N;
+        back += S;
+    }
+    else 
+    {
+        moves += S;
+        back += N;
+    }
 
+    if (E > W)
+    {
+        moves += E;
+        back += W;
+    }
+    else
+    {
+        moves += W;
+        back += E;
+    }
+
+    if (back > loss)
+    {
+        back -= loss;
+    }
+    else 
+    {
+        back = loss-back;
+    }
+
+    cout << (moves-back)*2 << "\n";
 }
