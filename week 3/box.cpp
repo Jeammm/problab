@@ -1,62 +1,69 @@
 #include <iostream>
 #include <vector>
+#define MAX_N 35
 
 using namespace std;
 
-vector<vector<int>> map;
 
-int check_space(vector<vector<int>> &map, int x, int y, int m, int n) {
+int map[MAX_N][MAX_N] = {0};
+bool seen[MAX_N][MAX_N] = {false};
+bool possible = false;
+int n, m;
+
+
+int check_space(int x, int y) {
     if (y < 0 || y >= n-1 || x < 0 || x >= m-1) {
         return 0;
     }
-    if (map[y][x] == 0 ) {
-        if (map[y+1][x] != 1 && map[y][x+1] != 1 && map[y+1][x+1] != 1) {
-            return 1; 
-        }
+    if (map[y][x] != 0 || map[y+1][x] != 0 || map[y][x+1] != 0 || map[y+1][x+1] != 0) {
+        return 0;
     }
-    return 0;
+
+    return 1;
 }
 
-int move(vector<vector<int>> &map, int x, int y, int &m, int &n, int &possible) {
-    if (y == n-2 || possible == 1) {
-        possible = 1;
-        return 1;
-    }
-    map[y][x] = 2;
-
-    if (!possible && check_space(map, x, y+1, m, n)) {
-        move(map, x, y+1, m, n, possible);
-    }
-    if (!possible && check_space(map, x+1, y, m, n)) {
-        move(map, x+1, y, m, n, possible);
-    }
-    if (!possible && check_space(map, x-1, y, m, n)) {
-        move(map, x-1, y, m, n, possible);
-    }
-    if (!possible && check_space(map, x, y-1, m, n)) {
-        move(map, x, y-1, m, n, possible);
+void move(int x, int y) {
+    
+    if (possible){
+        return;
     }
 
-    return 0;
+    if (seen[y][x]){
+        return;
+    }
+
+    if (check_space(x, y) == 0){
+        return;
+    }
+
+    if (y == n-2){
+        possible = true;
+        return;
+    }
+
+    seen[y][x] = true;
+
+    move(x, y+1);
+    move(x+1, y);
+    move(x-1, y);
+    move(x, y-1);
+
+    return;
 }
 
 int main(void) {
-    int m, n;
     cin >> n >> m;
     for (int i=0 ;i<n; i++) {
-        vector<int> row;
         string read;
         cin >> read;
         for (int j=0; j<m; j++) {
-            row.push_back(read[j] == '#');
+            map[i][j] = (read[j] == '#');
         }
-        map.push_back(row);
     }
     
-    int possible = 0;
     for (int i=0; i<m-1; i++) {
-        if (check_space(map, i, 0, m, n)) {
-            move(map, i, 0, m, n, possible);
+        if (check_space(i, 0)) {
+            move(i, 0);
             if (possible) {
                 cout << "yes" << "\n";
                 return 1;
