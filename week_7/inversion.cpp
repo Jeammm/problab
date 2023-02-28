@@ -3,25 +3,26 @@
 using namespace std;
 
 int arr[MAX_N];
+long long inv_count;
 
 void merge(int const left, int const mid, int const right)
 {
-  auto const subArrOne = mid - left + 1;
-  auto const subArrTwo = right - mid;
+  auto const subArrOneSize = mid - left + 1;
+  auto const subArrTwoSize = right - mid;
 
-  auto *leftArr = new int[subArrOne];
-  auto *rightArr = new int[subArrTwo];
+  auto *leftArr = new int[subArrOneSize];
+  auto *rightArr = new int[subArrTwoSize];
 
-  for (auto i = 0; i < subArrOne; i++)
+  for (auto i = 0; i < subArrOneSize; i++)
     leftArr[i] = arr[left + i];
-  for (auto j = 0; j < subArrTwo; j++)
+  for (auto j = 0; j < subArrTwoSize; j++)
     rightArr[j] = arr[mid + 1 + j];
 
   auto indexOfSubArrOne = 0;
   auto indexOfSubArrTwo = 0;
   int indexOfMergedArr = left;
 
-  while (indexOfSubArrOne < subArrOne && indexOfSubArrTwo < subArrTwo)
+  while (indexOfSubArrOne < subArrOneSize && indexOfSubArrTwo < subArrTwoSize)
   {
     if (leftArr[indexOfSubArrOne] <= rightArr[indexOfSubArrTwo])
     {
@@ -32,20 +33,19 @@ void merge(int const left, int const mid, int const right)
     {
       arr[indexOfMergedArr] = rightArr[indexOfSubArrTwo];
       indexOfSubArrTwo++;
+      inv_count += subArrOneSize - indexOfSubArrOne;
     }
     indexOfMergedArr++;
   }
-  // Copy the remaining elements of
-  // left[], if there are any
-  while (indexOfSubArrOne < subArrOne)
+
+  while (indexOfSubArrOne < subArrOneSize)
   {
     arr[indexOfMergedArr] = leftArr[indexOfSubArrOne];
     indexOfSubArrOne++;
     indexOfMergedArr++;
   }
-  // Copy the remaining elements of
-  // right[], if there are any
-  while (indexOfSubArrTwo < subArrTwo)
+
+  while (indexOfSubArrTwo < subArrTwoSize)
   {
     arr[indexOfMergedArr] = rightArr[indexOfSubArrTwo];
     indexOfSubArrTwo++;
@@ -55,13 +55,11 @@ void merge(int const left, int const mid, int const right)
   delete[] rightArr;
 }
 
-// begin is for left index and end is
-// right index of the sub-arr
-// of arr to be sorted */
+
 void mergeSort(int const begin, int const end)
 {
   if (begin >= end)
-    return; // Returns recursively
+    return;
 
   auto mid = begin + (end - begin) / 2;
   mergeSort(begin, mid);
@@ -69,42 +67,33 @@ void mergeSort(int const begin, int const end)
   merge(begin, mid, end);
 }
 
-// UTILITY FUNCTIONS
-// Function to print an arr
 void printArr(int size)
 {
-  for (auto i = 0; i < size-1; i++)
+  for (auto i = 0; i < size; i++)
   { 
     cout << arr[i] << " ";
   }
-  cout << arr[size-1] << "\n";
+  cout << "\n";
 }
 
-// Driver code
 int main()
 {
-  ios::sync_with_stdio(false);
-  cin.tie(NULL);
   int n = -1;
   int a;
   cin >> n;
 
-  while (n != 0)
+
+  for (int i = 0; i < n; i++)
   {
-    for (int i = 0; i < n; i++)
-    {
-      cin >> a;
-      arr[i] = a;
-    }
-    
-    int arr_size = n;
-
-    mergeSort(0, arr_size - 1);
-
-    printArr(arr_size);
-
-    cin >> n;
+    cin >> a;
+    arr[i] = a;
   }
+  
+  int arr_size = n;
+
+  mergeSort(0, arr_size - 1);
+
+  cout << inv_count;
 
   return 0;
 }
