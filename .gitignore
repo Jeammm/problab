@@ -2,6 +2,8 @@
 *.in
 *.exe
 
+tempCodeRunnerFile.cpp
+
 ./.git/hooks/pre-push.sample
 ./.git/hooks/post-update.sample
 ./.git/hooks/pre-merge-commit.sample
