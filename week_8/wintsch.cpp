@@ -1,12 +1,16 @@
 #include <iostream>
-#include <vector>
+// #include <vector>
 #define MAX_WORKS 1010
 
 using namespace std;
 
 int weight[MAX_WORKS];
 pair<int, int> interval[MAX_WORKS];
-vector<int> work_set;
+// vector<vector<int>> work_set;
+int value[MAX_WORKS];
+int parent[MAX_WORKS];
+int max_value_work = 0;
+int max_value = 0;
 
 int n;
 
@@ -18,62 +22,69 @@ void get_input()
   {
     cin >> s >> t >> w;
     weight[i] = w;
+    value[i] = w;
     interval[i] = make_pair(s, t);
+    parent[i] = i;
   }
 }
 
-int get_works(int work_number)
+void get_value()
+{
+  int i;
+  for (i = 1; i < n; i++)
+  {
+    int max_value_before = 0;
+    int top_value_work_before = i;
+    for (int j = 0; j < i; j++) //find max value that compatible
+    {
+      if (interval[j].second <= interval[i].first && value[j] > max_value_before)
+      {
+        max_value_before = value[j];
+        top_value_work_before = j;
+      }
+    }
+    value[i] += max_value_before; //set level for work i
+    parent[i] = top_value_work_before;  //set parent for work i
+    
+    if (value[i] > max_value)
+    {
+      max_value = value[i];
+      max_value_work = i;
+    }
+  }
+}
+
+void print_work_set()
 {
 
-  if (work_number == 0)
+  int current = max_value_work;
+
+  cout << value[max_value_work] << "\n";
+
+  int count = 1;
+
+  while (parent[current] != current)
   {
-    return weight[0];
-  }
-  if (work_number < 0)
-  {
-    return 0;
-  }
-
-  // cout << work_number << " ";
-
-  int possible = work_number - 1;
-
-
-  int value_if_not_choose = 0;
-  int max_value_if_not_choose = 0;
-
-  while (interval[possible].second > interval[work_number].first && possible >= 0)
-  {
-    value_if_not_choose = get_works(possible);
-    if (value_if_not_choose > max_value_if_not_choose)
-    {
-      max_value_if_not_choose = value_if_not_choose;
-    }
-    
-    possible--;
+    current = parent[current];
+    count++;
   }
 
-  int value_if_choose = weight[work_number] + get_works(possible);
 
-  if (max_value_if_not_choose > value_if_choose)
+  cout << count << "\n";
+
+  current = max_value_work;
+  while (parent[current] != current)
   {
-    return max_value_if_not_choose;
+    cout << current+1 << " ";
+    current = parent[current];
   }
-  else
-  {
-    work_set.push_back(work_number + 1);
-    return value_if_choose;
-  }
-  
+  cout << current+1;
+
 }
 
 int main()
 {
   get_input();
-  cout << get_works(n - 1) << "\n";
-  cout << work_set.size() << "\n";
-  for (auto ptr:work_set)
-  {
-    cout << ptr << " ";
-  }
+  get_value();
+  print_work_set();
 }
