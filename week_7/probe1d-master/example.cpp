@@ -14,7 +14,7 @@ main()
   while (b > a)
   {
     mid = a + (b-a)/2;
-  
+
     if (probe_check(a, mid))
     {
       b = mid;
