@@ -36,34 +36,62 @@ void union_t(int u, int v)
   psize[v] += psize[u];
 }
 
+bool covered()
+{
+  int current = find(0);
+  for (int k = 1; k < n; k++)
+  {
+    if (find(k) != current)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 int result = 0;
 
-void get_result()
+int get_result(int i)
 {
-  sort(sorted_edge, sorted_edge + m);
-  for (int i = 0; i < m; i++)
+  sort(sorted_edge, sorted_edge + i);
+  for (int j = 0; j < i; j++)
   {
-    int e = sorted_edge[i].second;
+    int e = sorted_edge[j].second;
     int u = edge[e][0];
     int v = edge[e][1];
 
     if (find(u) != find(v))
     {
       union_t(u, v);
-      result += sorted_edge[i].first;
+      result += sorted_edge[j].first;
     }
   }
-  cout << result << "\n";
+
+
+  if (covered())
+  {
+    return result;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
-void read_input()
+void init()
 {
-  cin >> n >> m;
   for (int i = 0; i < n; i++)
   {
     parent[i] = i;
     psize[i] = 1;
   }
+}
+
+void read_input()
+{
+  cin >> n >> m;
+  int min_result = -1;
+  
   for (int i = 0; i < m; i++)
   {
     int a, b, w;
@@ -74,7 +102,12 @@ void read_input()
     edge[i][1] = b;
     sorted_edge[i].first = w;
     sorted_edge[i].second = i;
-    get_result();
+
+    result = 0;
+    init();
+    result = get_result(i + 1);
+
+    cout << result << "\n";
   }
 }
 
