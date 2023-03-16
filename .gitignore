@@ -1,6 +1,7 @@
 *.vscode
 *.in
 *.exe
+out.txt
 
 tempCodeRunnerFile.cpp
 
