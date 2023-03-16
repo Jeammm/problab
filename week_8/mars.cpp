@@ -43,7 +43,6 @@ int rotate(char from, int to)
 
 int find_min(char left, char right, int index)
 {
-
   if (index == word_size)
   {
     return 0;
